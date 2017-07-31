@@ -1,0 +1,52 @@
+set chassis cluster cluster-id 1 node 0 reboot 
+
+set groups node0 system host-name A
+set groups node0 interfaces fxp0 unit 0 family inet address 10.100.100.1/24
+set groups node1 system host-name B
+set groups node1 interfaces fxp0 unit 0 family inet address 10.100.100.2/24
+set apply-groups "${node}"
+
+set interfaces fab0 fabric-options member-interfaces ge-0/0/2 
+set interfaces fab1 fabric-options member-interfaces ge-5/0/2
+
+set chassis cluster reth-count 13
+set chassis cluster redundancy-group 0 node 0 priority 100 
+set chassis cluster redundancy-group 0 node 1 priority 1 
+set chassis cluster redundancy-group 1 node 0 priority 100
+set chassis cluster redundancy-group 1 node 1 priority 1
+
+
+set chassis cluster redundancy-group 1 interface-monitor ge-0/0/3 weight 255
+set chassis cluster redundancy-group 1 interface-monitor ge-0/0/4 weight 255
+set chassis cluster redundancy-group 1 interface-monitor ge-5/0/3 weight 255
+set chassis cluster redundancy-group 1 interface-monitor ge-5/0/4 weight 255
+
+
+set interfaces ge-0/0/3 gigether-options redundant-parent reth3   
+set interfaces ge-5/0/3 gigether-options redundant-parent reth3    
+set interfaces reth3 redundant-ether-options redundancy-group 1 
+set interfaces reth3 unit 0 family inet address 192.168.11.254/24
+
+set interfaces ge-0/0/4 gigether-options redundant-parent reth4    
+set interfaces ge-5/0/4 gigether-options redundant-parent reth4    
+set interfaces reth4 redundant-ether-options redundancy-group 1      
+set interfaces reth4 unit 0 family inet address 10.10.10.1/24
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+set chassis cluster cluster-id 1 node 1 reboot
+set groups node0 system host-name B
+set groups node0 interfaces fxp0 unit 0 family inet address 10.100.100.2/24
